@@ -10,7 +10,7 @@ Research software metadata in deposits: a small kit for one unconference session
 
 ## The ten fields
 
-Five core: `name`, `author`, `description`, `license`, `version`. Five more: `identifier`, `softwareRequirements`, `operatingSystem`, `codeRepository`, `referencePublication`. All are [CodeMeta](https://codemeta.github.io/) terms. Why these ten, against the RSMD guidelines, CodeMeta and the Software Heritage deposit docs: [WHY-THESE-FIELDS.md](WHY-THESE-FIELDS.md).
+Five core: `name`, `author`, `description`, `license`, `version`. Five more: `identifier`, `softwareRequirements`, `operatingSystem`, `codeRepository`, `referencePublication`. All are [CodeMeta](https://codemeta.github.io/) terms. Why these ten, against the RSMD guidelines, CodeMeta and the Software Heritage deposit docs: [WHY-THESE-FIELDS.md](WHY-THESE-FIELDS.md). Questions from the table: [FAQ.md](FAQ.md).
 
 ## Rebuild the PDF
 
