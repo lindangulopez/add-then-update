@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Add, then update: mapping sheet and ten-field card</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 10.5pt; color: #111; margin: 0; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 { font-size: 16pt; margin: 0 0 2mm; }
+  h2 { font-size: 12pt; margin: 4mm 0 2mm; }
+  .sub { margin: 0 0 4mm; color: #333; }
+  .fill { display: flex; gap: 6mm; margin-bottom: 4mm; }
+  .fill div { flex: 1; border-bottom: 1px solid #111; padding-top: 6mm; font-size: 9pt; color: #444; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #111; padding: 2mm; vertical-align: top; text-align: left; }
+  th { background: #eee; font-size: 9pt; }
+  td.box { width: 16mm; text-align: center; font-size: 13pt; }
+  tr.core td:first-child { font-weight: bold; }
+  tr.sep td { background: #eee; font-size: 9pt; font-weight: bold; padding: 1mm 2mm; }
+  .notes { height: 11mm; }
+  .lines div { border-bottom: 1px solid #111; height: 8mm; }
+  code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 9.5pt; }
+  footer { margin-top: 4mm; font-size: 8pt; color: #555; }
+  /* card: two copies per A4, cut along the dashed line */
+  .card { height: 126mm; border: 1px solid #111; padding: 5mm; margin-bottom: 4mm; }
+  .card h1 { font-size: 13pt; }
+  .card table td, .card table th { padding: 1.3mm 2mm; font-size: 9pt; }
+  .card .k { font-size: 8.5pt; margin-top: 2mm; }
+  .cut { border-top: 1px dashed #777; margin: 0 0 4mm; font-size: 7pt; color: #777; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: MAPPING SHEET -->
+<section class="page">
+  <h1>Add, then update: map one software record</h1>
+  <p class="sub">Take one software record from your repository. For each field, tick where it stands today, and note where it gets lost on the way to the archive.</p>
+
+  <div class="fill">
+    <div>Repository / platform</div>
+    <div>Record (title or link)</div>
+    <div>Your name</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Field (CodeMeta term)</th>
+        <th>Sent today</th>
+        <th>Held, not sent</th>
+        <th>Not held</th>
+        <th>Where it gets lost / notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="sep"><td colspan="5">The five core fields</td></tr>
+      <tr class="core"><td><code>name</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr class="core"><td><code>author</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr class="core"><td><code>description</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr class="core"><td><code>license</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr class="core"><td><code>version</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr class="sep"><td colspan="5">Five more</td></tr>
+      <tr><td><code>identifier</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr><td><code>softwareRequirements</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr><td><code>operatingSystem</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr><td><code>codeRepository</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+      <tr><td><code>referencePublication</code></td><td class="box">☐</td><td class="box">☐</td><td class="box">☐</td><td class="notes"></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Updating</h2>
+  <p>When this software changes, what do you send? &nbsp; ☐ a new version on the same origin &nbsp; ☐ a metadata-only update next to the old metadata &nbsp; ☐ nothing yet</p>
+
+  <h2>One next step</h2>
+  <div class="lines"><div></div><div></div></div>
+
+  <footer>Community Workshop, 25 Nov 2026 · Add, then update · lindangulopez.github.io/add-then-update</footer>
+</section>
+
+<!-- PAGE 2: TEN-FIELD CARD, TWO PER A4 -->
+<section class="page">
+  <div class="card">
+    <h1>The ten fields</h1>
+    <table>
+      <thead><tr><th>CodeMeta term</th><th>What it holds</th></tr></thead>
+      <tbody>
+        <tr class="core"><td><code>name</code></td><td>The software's name</td></tr>
+        <tr class="core"><td><code>author</code></td><td>The people (or organisations) who wrote it; an ORCID where there is one</td></tr>
+        <tr class="core"><td><code>description</code></td><td>A short text on what it does</td></tr>
+        <tr class="core"><td><code>license</code></td><td>The licence, as its SPDX URL (e.g. <code>https://spdx.org/licenses/MIT</code>)</td></tr>
+        <tr class="core"><td><code>version</code></td><td>The version of this release</td></tr>
+        <tr><td><code>identifier</code></td><td>A persistent identifier for the software (e.g. a DOI or a SWHID)</td></tr>
+        <tr><td><code>softwareRequirements</code></td><td>What it needs to run (language version, libraries)</td></tr>
+        <tr><td><code>operatingSystem</code></td><td>The systems it runs on</td></tr>
+        <tr><td><code>codeRepository</code></td><td>Where the source code is developed (URL)</td></tr>
+        <tr><td><code>referencePublication</code></td><td>The article to cite with the software</td></tr>
+      </tbody>
+    </table>
+    <p class="k"><strong>Bold</strong> = the five core fields. A deposit sends the code and its metadata; a SWHID comes back. "Loaded" is not "checked". More: codemeta.github.io</p>
+  </div>
+  <div class="cut">✂ cut here</div>
+  <div class="card">
+    <h1>The ten fields</h1>
+    <table>
+      <thead><tr><th>CodeMeta term</th><th>What it holds</th></tr></thead>
+      <tbody>
+        <tr class="core"><td><code>name</code></td><td>The software's name</td></tr>
+        <tr class="core"><td><code>author</code></td><td>The people (or organisations) who wrote it; an ORCID where there is one</td></tr>
+        <tr class="core"><td><code>description</code></td><td>A short text on what it does</td></tr>
+        <tr class="core"><td><code>license</code></td><td>The licence, as its SPDX URL (e.g. <code>https://spdx.org/licenses/MIT</code>)</td></tr>
+        <tr class="core"><td><code>version</code></td><td>The version of this release</td></tr>
+        <tr><td><code>identifier</code></td><td>A persistent identifier for the software (e.g. a DOI or a SWHID)</td></tr>
+        <tr><td><code>softwareRequirements</code></td><td>What it needs to run (language version, libraries)</td></tr>
+        <tr><td><code>operatingSystem</code></td><td>The systems it runs on</td></tr>
+        <tr><td><code>codeRepository</code></td><td>Where the source code is developed (URL)</td></tr>
+        <tr><td><code>referencePublication</code></td><td>The article to cite with the software</td></tr>
+      </tbody>
+    </table>
+    <p class="k"><strong>Bold</strong> = the five core fields. A deposit sends the code and its metadata; a SWHID comes back. "Loaded" is not "checked". More: codemeta.github.io</p>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add, then update · slides</title>
+<style>
+  :root { --ink: #16202a; --muted: #5a6672; --line: #d5dbe1; --accent: #c8102e; --soft: #f3f5f7; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #222; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); }
+  .deck { height: 100%; display: grid; place-items: center; }
+  .slide { display: none; width: min(100vw, 177.78vh); aspect-ratio: 16 / 9; background: #fff; padding: 5% 6%; position: relative; overflow: hidden; font-size: min(2.2vw, 3.9vh); }
+  .slide.on { display: flex; flex-direction: column; }
+  .kicker { font-size: .7em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 .6em; }
+  h1 { font-size: 2.1em; line-height: 1.1; margin: 0 0 .5em; }
+  h2 { font-size: 1.5em; line-height: 1.15; margin: 0 0 .7em; }
+  p, li { line-height: 1.4; margin: 0 0 .5em; }
+  ul { padding-left: 1.1em; margin: 0; }
+  code { font-family: ui-monospace, "DejaVu Sans Mono", Consolas, monospace; font-size: .9em; }
+  .big { font-size: 1.25em; }
+  .muted { color: var(--muted); }
+  .cover { background: var(--ink); color: #fff; justify-content: center; }
+  .cover .kicker { color: #c9d1d9; }
+  .cover h1 span { color: #ff8a9b; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em; flex: 1; }
+  .box { background: var(--soft); border-radius: .4em; padding: .8em 1em; }
+  .box h3 { margin: 0 0 .4em; font-size: 1em; color: var(--accent); }
+  .tag { display: inline-block; border: 2px solid var(--accent); color: var(--accent); border-radius: .3em; padding: .15em .5em; font-weight: 600; }
+  svg { width: 100%; height: auto; }
+  .qr { display: flex; gap: 1.5em; align-items: center; }
+  #qr { background: #fff; padding: .4em; border: 1px solid var(--line); flex: none; }
+  #qr img, #qr canvas { width: 9em !important; height: 9em !important; display: block; }
+  .num { position: absolute; right: 2.5%; bottom: 3%; font-size: .6em; color: var(--muted); }
+  .cover .num { color: #c9d1d9; }
+  @media print {
+    html, body { background: #fff; height: auto; }
+    .slide { display: flex !important; flex-direction: column; width: 297mm; height: 167mm; aspect-ratio: auto; font-size: 15pt; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide cover">
+  <p class="kicker">Community Workshop · 25 Nov 2026 · Unconference session</p>
+  <h1>Add, <span>then update</span>:<br>research software metadata in deposits</h1>
+  <p class="big">Where does your metadata get lost on the way to the archive?</p>
+  <p>Bring one software record.</p>
+</section>
+
+<section class="slide">
+  <p class="kicker">One picture</p>
+  <h2>The deposit is the push route into the archive</h2>
+  <svg viewBox="0 0 900 260" role="img" aria-label="Your repository sends code and metadata as a deposit to the Software Heritage archive; a SWHID comes back.">
+    <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16202a"/></marker></defs>
+    <rect x="10" y="60" width="230" height="110" rx="12" fill="#f3f5f7" stroke="#16202a" stroke-width="2"/>
+    <text x="125" y="110" text-anchor="middle" font-size="24" font-weight="600" fill="#16202a">Your repository</text>
+    <text x="125" y="142" text-anchor="middle" font-size="18" fill="#5a6672">a software record</text>
+    <rect x="660" y="60" width="230" height="110" rx="12" fill="#16202a"/>
+    <text x="775" y="110" text-anchor="middle" font-size="24" font-weight="600" fill="#fff">Archive</text>
+    <text x="775" y="142" text-anchor="middle" font-size="18" fill="#c9d1d9">Software Heritage</text>
+    <line x1="245" y1="95" x2="650" y2="95" stroke="#16202a" stroke-width="3" marker-end="url(#a)"/>
+    <text x="448" y="82" text-anchor="middle" font-size="19" fill="#16202a">deposit: code + metadata (CodeMeta)</text>
+    <line x1="655" y1="140" x2="250" y2="140" stroke="#c8102e" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#a)"/>
+    <text x="448" y="168" text-anchor="middle" font-size="19" fill="#c8102e">a SWHID comes back</text>
+    <text x="450" y="235" text-anchor="middle" font-size="20" fill="#5a6672">Every field you don't send stays behind in your repository.</text>
+  </svg>
+  <p class="big" style="margin-top:auto"><span class="tag">"Loaded" is not "checked"</span> &nbsp;A deposit can load with thin metadata.</p>
+  <span class="num">2</span>
+</section>
+
+<section class="slide">
+  <p class="kicker">The ten fields</p>
+  <h2>What travels with the code</h2>
+  <div class="cols">
+    <div class="box"><h3>The five core fields</h3>
+      <ul><li><code>name</code></li><li><code>author</code> (an ORCID where there is one)</li><li><code>description</code></li><li><code>license</code> (its SPDX URL)</li><li><code>version</code></li></ul></div>
+    <div class="box"><h3>Five more</h3>
+      <ul><li><code>identifier</code> (a DOI or a SWHID)</li><li><code>softwareRequirements</code></li><li><code>operatingSystem</code></li><li><code>codeRepository</code></li><li><code>referencePublication</code></li></ul></div>
+  </div>
+  <p class="muted" style="margin-top:.8em">All CodeMeta terms. More at codemeta.github.io</p>
+  <span class="num">3</span>
+</section>
+
+<section class="slide">
+  <p class="kicker">20 minutes</p>
+  <h2>Map one record</h2>
+  <div class="qr">
+    <div id="qr" aria-label="QR code to the survey"></div>
+    <div>
+      <p>For each field: <b>sent today</b>, <b>held but not sent</b>, or <b>not held</b>.</p>
+      <p>Then: where does it get lost?</p>
+      <p class="muted">On paper, or online:<br><b id="surveyurl"></b></p>
+    </div>
+  </div>
+  <span class="num">4</span>
+</section>
+
+<section class="slide">
+  <p class="kicker">10 minutes</p>
+  <h2>Then update: when the software changes</h2>
+  <div class="cols">
+    <div class="box"><h3>A new version</h3><p>New code, deposited on the same origin. The archive keeps every version, each with its own SWHID.</p></div>
+    <div class="box"><h3>A metadata-only update</h3><p>No new code. New metadata is deposited about software already in the archive, next to the old metadata, which stays.</p></div>
+  </div>
+  <p class="big" style="margin-top:.8em">Which one does your repository send today?</p>
+  <span class="num">5</span>
+</section>
+
+<section class="slide cover">
+  <p class="kicker">5 minutes</p>
+  <h1>One next step each</h1>
+  <p class="big">One field to add, or one update to send, and by when.</p>
+  <p>Thank you. Linda Angulo Lopez</p>
+  <span class="num">6</span>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  const url = location.protocol.startsWith("http") ? new URL("survey.html", location.href).href : "https://lindangulopez.github.io/add-then-update/survey.html";
+  document.getElementById("surveyurl").textContent = url.replace(/^https?:\/\//, "");
+  try { new QRCode(document.getElementById("qr"), { text: url, width: 256, height: 256 }); } catch (e) { document.getElementById("qr").hidden = true; }
+  const slides = [...document.querySelectorAll(".slide")];
+  let i = Math.min(Math.max(parseInt(location.hash.slice(1)) - 1 || 0, 0), slides.length - 1);
+  const show = n => { i = Math.min(Math.max(n, 0), slides.length - 1); slides.forEach((s, k) => s.classList.toggle("on", k === i)); history.replaceState(null, "", "#" + (i + 1)); };
+  document.addEventListener("keydown", e => {
+    if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) show(i + 1);
+    if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) show(i - 1);
+    if (e.key === "Home") show(0); if (e.key === "End") show(slides.length - 1);
+    if (e.key === "f") document.documentElement.requestFullscreen?.();
+  });
+  document.addEventListener("click", e => { if (!e.target.closest("a")) show(e.clientX > innerWidth / 3 ? i + 1 : i - 1); });
+  show(i);
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Add, then update
+
+Research software metadata in deposits: a small kit for one unconference session at the Community Workshop, 25 November 2026.
+
+**Site**: https://lindangulopez.github.io/add-then-update/
+
+- [`survey.html`](survey.html): map one software record against ten CodeMeta fields (sent today, held but not sent, not held). It runs in the browser only: nothing is sent or stored on a server; answers can be copied or saved as Markdown.
+- [`slides.html`](slides.html): six slides for the session (arrow keys, `f` for full screen). A QR code links to the survey.
+- [`print/sheets.pdf`](print/sheets.pdf): the mapping sheet and the ten-field card, A4. Built from `print/sheets.html`.
+
+## The ten fields
+
+Five core: `name`, `author`, `description`, `license`, `version`. Five more: `identifier`, `softwareRequirements`, `operatingSystem`, `codeRepository`, `referencePublication`. All are [CodeMeta](https://codemeta.github.io/) terms.
+
+## Rebuild the PDF
+
+```bash
+google-chrome --headless --no-pdf-header-footer --print-to-pdf=print/sheets.pdf print/sheets.html
+```
+
+## Licence
+
+Text and printouts: CC BY 4.0. Code (HTML, CSS, JavaScript): MIT, see [LICENSE](LICENSE).
+
+Written with the help of Claude (Anthropic).

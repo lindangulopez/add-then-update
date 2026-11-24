@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map one record · Add, then update</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <p class="kicker"><a href="./">Add, then update</a> · Survey</p>
+  <h1>Map one software record</h1>
+  <p class="lead">Take one software record from your repository. For each field, say where it stands today and where it gets lost on the way to the archive.</p>
+  <p class="note">Nothing is sent anywhere. Your answers stay in this browser; at the end you can copy them or save them as a file.</p>
+
+  <form id="survey" autocomplete="off">
+    <fieldset class="about">
+      <label>Repository or platform <input name="repository" type="text"></label>
+      <label>Record (title or link) <input name="record" type="text"></label>
+      <label>Your name (optional) <input name="person" type="text"></label>
+    </fieldset>
+
+    <h2>The five core fields</h2>
+    <div id="core"></div>
+    <h2>Five more</h2>
+    <div id="more"></div>
+
+    <h2>Updating</h2>
+    <fieldset class="choices" id="update">
+      <legend>When this software changes, what do you send?</legend>
+      <label><input type="radio" name="update" value="A new version on the same origin"> A new version on the same origin</label>
+      <label><input type="radio" name="update" value="A metadata-only update next to the old metadata"> A metadata-only update next to the old metadata</label>
+      <label><input type="radio" name="update" value="Nothing yet"> Nothing yet</label>
+      <label><input type="radio" name="update" value="Not sure"> Not sure</label>
+    </fieldset>
+
+    <h2>One next step</h2>
+    <textarea name="nextstep" rows="3" aria-label="One next step"></textarea>
+
+    <div class="actions">
+      <button type="button" id="show">See my result</button>
+      <button type="button" id="clear" class="secondary">Start again</button>
+    </div>
+  </form>
+
+  <section id="result" hidden>
+    <h2>Your result</h2>
+    <div id="counts" class="counts"></div>
+    <textarea id="output" rows="18" readonly aria-label="Result as Markdown"></textarea>
+    <div class="actions">
+      <button type="button" id="copy">Copy</button>
+      <button type="button" id="save" class="secondary">Save as .md</button>
+      <span id="status" role="status"></span>
+    </div>
+  </section>
+</main>
+
+<script>
+const FIELDS = [
+  ["name", "The software's name", true],
+  ["author", "Who wrote it; an ORCID where there is one", true],
+  ["description", "A short text on what it does", true],
+  ["license", "The licence, as its SPDX URL", true],
+  ["version", "The version of this release", true],
+  ["identifier", "A persistent identifier (e.g. a DOI or a SWHID)", false],
+  ["softwareRequirements", "What it needs to run", false],
+  ["operatingSystem", "The systems it runs on", false],
+  ["codeRepository", "Where the source code is developed (URL)", false],
+  ["referencePublication", "The article to cite with the software", false],
+];
+const STATES = ["Sent today", "Held, not sent", "Not held", "Not sure"];
+const KEY = "add-then-update-survey";
+
+function build() {
+  for (const [term, help, core] of FIELDS) {
+    const fs = document.createElement("fieldset");
+    fs.className = "field";
+    fs.innerHTML = `<legend><code>${term}</code> <span>${help}</span></legend>
+      <div class="choices row">${STATES.map(s =>
+        `<label><input type="radio" name="f_${term}" value="${s}"> ${s}</label>`).join("")}</div>
+      <input type="text" name="n_${term}" placeholder="Where it gets lost (optional)" aria-label="Notes for ${term}">`;
+    document.getElementById(core ? "core" : "more").appendChild(fs);
+  }
+}
+
+const form = document.getElementById("survey");
+function data() { return Object.fromEntries(new FormData(form)); }
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(data())); } catch (e) {} }
+function restore() {
+  let d; try { d = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  if (!d) return;
+  for (const [k, v] of Object.entries(d)) {
+    const els = form.elements[k];
+    if (!els) continue;
+    if (els instanceof RadioNodeList) { for (const r of els) r.checked = r.value === v; }
+    else els.value = v;
+  }
+}
+
+function markdown() {
+  const d = data();
+  const lines = ["# Add, then update: one software record", ""];
+  lines.push(`- Repository: ${d.repository || ""}`, `- Record: ${d.record || ""}`);
+  if (d.person) lines.push(`- Name: ${d.person}`);
+  lines.push(`- Date: ${new Date().toISOString().slice(0, 10)}`, "", "| Field | Status | Where it gets lost |", "|---|---|---|");
+  for (const [term] of FIELDS) lines.push(`| ${term} | ${d["f_" + term] || "-"} | ${(d["n_" + term] || "").replace(/\|/g, "/")} |`);
+  lines.push("", `**Updating**: ${d.update || "-"}`, "", `**One next step**: ${d.nextstep || "-"}`, "");
+  return lines.join("\n");
+}
+
+function counts() {
+  const d = data(), c = Object.fromEntries(STATES.map(s => [s, 0]));
+  let blank = 0;
+  for (const [term] of FIELDS) d["f_" + term] ? c[d["f_" + term]]++ : blank++;
+  return STATES.map(s => `<div><b>${c[s]}</b>${s}</div>`).join("") + (blank ? `<div><b>${blank}</b>Not answered</div>` : "");
+}
+
+build(); restore();
+form.addEventListener("input", save);
+document.getElementById("show").onclick = () => {
+  document.getElementById("output").value = markdown();
+  document.getElementById("counts").innerHTML = counts();
+  const r = document.getElementById("result"); r.hidden = false; r.scrollIntoView({behavior: "smooth"});
+};
+document.getElementById("clear").onclick = () => {
+  form.reset(); try { localStorage.removeItem(KEY); } catch (e) {}
+  document.getElementById("result").hidden = true;
+};
+const status = t => { document.getElementById("status").textContent = t; };
+document.getElementById("copy").onclick = async () => {
+  const out = document.getElementById("output");
+  try { await navigator.clipboard.writeText(out.value); status("Copied."); }
+  catch (e) { out.select(); status("Selected: press Ctrl+C."); }
+};
+document.getElementById("save").onclick = () => {
+  const blob = new Blob([markdown()], {type: "text/markdown"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "add-then-update-" + (data().repository || "record").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".md";
+  a.click(); URL.revokeObjectURL(a.href); status("Saved.");
+};
+</script>
+</body>
+</html>

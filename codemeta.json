@@ -1,0 +1,12 @@
+{
+  "@context": "https://w3id.org/codemeta/3.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Add, then update",
+  "description": "A browser-only survey, slides and printouts for mapping one research software record against ten CodeMeta fields, for an unconference session on research software metadata in deposits.",
+  "author": [{ "@type": "Person", "givenName": "Linda", "familyName": "Angulo Lopez" }],
+  "license": "https://spdx.org/licenses/MIT",
+  "version": "1.0.0",
+  "codeRepository": "https://github.com/lindangulopez/add-then-update",
+  "programmingLanguage": ["HTML", "CSS", "JavaScript"],
+  "dateCreated": "2026-11-24"
+}
