@@ -33,3 +33,8 @@ button.secondary { background: #fff; color: var(--accent); }
 .links a:hover { border-color: var(--accent); }
 .links b { color: var(--accent); }
 footer { margin-top: 3rem; font-size: .8rem; color: var(--muted); }
+
+.key { display: grid; grid-template-columns: max-content 1fr; gap: .25rem .8rem; font-size: .9rem; margin: 0 0 1rem; }
+.key dt { font-weight: 600; }
+.key dd { margin: 0; color: var(--muted); }
+@media (max-width: 480px) { .key { grid-template-columns: 1fr; } .key dd { margin-bottom: .4rem; } }

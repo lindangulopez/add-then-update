@@ -11,6 +11,12 @@
   <p class="kicker"><a href="./">Add, then update</a> · Survey</p>
   <h1>Map one software record</h1>
   <p class="lead">Take one software record from your repository. For each field, say where it stands today and where it gets lost on the way to the archive.</p>
+  <dl class="key">
+    <dt>Sent to deposit</dt><dd>already sent to Software Heritage in a deposit</dd>
+    <dt>Can be sent</dt><dd>in your repository's machine export (e.g. DataCite over OAI-PMH), so it could go into a deposit today</dd>
+    <dt>Held, not sent</dt><dd>the information exists (on the record page, on Zenodo, in the code) but not in that export</dd>
+    <dt>Not held</dt><dd>nowhere</dd>
+  </dl>
   <p class="note">Nothing is sent anywhere. Your answers stay in this browser; at the end you can copy them or save them as a file.</p>
 
   <form id="survey" autocomplete="off">
@@ -68,7 +74,7 @@ const FIELDS = [
   ["codeRepository", "Where the source code is developed (URL)", false],
   ["referencePublication", "The article to cite with the software", false],
 ];
-const STATES = ["Can be sent", "Held, not sent", "Not held", "Not sure"];
+const STATES = ["Sent to deposit", "Can be sent", "Held, not sent", "Not held", "Not sure"];
 const KEY = "add-then-update-survey";
 
 function build() {
