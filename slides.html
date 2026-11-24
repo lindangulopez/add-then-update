@@ -30,6 +30,17 @@
   .qr { display: flex; gap: 1.5em; align-items: center; }
   #qr { background: #fff; padding: .4em; border: 1px solid var(--line); flex: none; }
   #qr img, #qr canvas { width: 9em !important; height: 9em !important; display: block; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: .6em 1.2em; }
+  .grid4 .box { padding: .6em .9em; }
+  .grid4 .box h3 { margin-bottom: .2em; }
+  .grid4 .box p { margin: 0; font-size: .9em; }
+  .chain { display: flex; flex-wrap: wrap; align-items: center; gap: .35em; font-size: .78em; margin: 0 0 1em; }
+  .chain span { background: var(--soft); border-radius: .3em; padding: .3em .55em; }
+  .chain i { font-style: normal; color: var(--muted); }
+  table.t { width: 100%; border-collapse: collapse; font-size: .8em; }
+  table.t th, table.t td { border-bottom: 1px solid var(--line); padding: .35em .5em; text-align: left; vertical-align: top; }
+  table.t th { color: var(--muted); font-weight: 600; }
+  table.t td:first-child { font-weight: 600; white-space: nowrap; }
   .num { position: absolute; right: 2.5%; bottom: 3%; font-size: .6em; color: var(--muted); }
   .cover .num { color: #c9d1d9; }
   @media print {
@@ -66,7 +77,7 @@
     <text x="450" y="235" text-anchor="middle" font-size="20" fill="#5a6672">Every field you don't send stays behind in your repository.</text>
   </svg>
   <p class="big" style="margin-top:auto"><span class="tag">"Loaded" is not "checked"</span> &nbsp;A deposit can load with thin metadata.</p>
-  <span class="num">2</span>
+  <span class="num"></span>
 </section>
 
 <section class="slide">
@@ -79,7 +90,20 @@
       <ul><li><code>identifier</code> (a DOI, an ARK, a HAL id)</li><li><code>softwareRequirements</code></li><li><code>operatingSystem</code></li><li><code>codeRepository</code></li><li><code>referencePublication</code></li></ul></div>
   </div>
   <p class="muted" style="margin-top:.8em">All CodeMeta terms. More at codemeta.github.io</p>
-  <span class="num">3</span>
+  <span class="num"></span>
+</section>
+
+<section class="slide">
+  <p class="kicker">The logic</p>
+  <h2>Four statuses for each field</h2>
+  <div class="grid4">
+    <div class="box"><h3>Sent to deposit</h3><p>Already sent to Software Heritage in a deposit.</p></div>
+    <div class="box"><h3>Can be sent</h3><p>In your machine export (e.g. DataCite over OAI-PMH): a deposit client could send it today.</p></div>
+    <div class="box"><h3>Held, not sent</h3><p>It exists (on the record page, on Zenodo, in the code) but not in that export.</p></div>
+    <div class="box"><h3>Not held</h3><p>Nowhere.</p></div>
+  </div>
+  <p class="big" style="margin-top:auto"><span class="tag">The page is not the export</span> &nbsp;Check what a machine gets.</p>
+  <span class="num"></span>
 </section>
 
 <section class="slide">
@@ -93,7 +117,51 @@
       <p class="muted">On paper, or online:<br><b id="surveyurl"></b></p>
     </div>
   </div>
-  <span class="num">4</span>
+  <span class="num"></span>
+</section>
+
+<section class="slide">
+  <p class="kicker">The logic</p>
+  <h2>Where it gets lost</h2>
+  <div class="chain"><span>submission form</span><i>→</i><span>repository record</span><i>→</i><span>export crosswalk</span><i>→</i><span>export</span><i>→</i><span>deposit client</span><i>→</i><span>CodeMeta XML</span><i>→</i><span>archive</span></div>
+  <table class="t">
+    <tr><th>Loss point</th><th>What happens</th><th>Typical fields</th></tr>
+    <tr><td>1. No field</td><td>The value only appears inside other text</td><td>version, inside the title or the citation</td></tr>
+    <tr><td>2. Field as text</td><td>Stored as a sentence, the identifier buried inside</td><td>repository URL, article, ORCID as "Name [0000-…]"</td></tr>
+    <tr><td>3. Not mapped</td><td>The crosswalk has no rule, so the export drops it</td><td>relations, requirements</td></tr>
+    <tr><td>Upstream only</td><td>Only in the code or on Zenodo, never copied</td><td>dependencies, operating system</td></tr>
+  </table>
+  <span class="num"></span>
+</section>
+
+<section class="slide">
+  <p class="kicker">The logic</p>
+  <h2>From "held, not sent" to "can be sent"</h2>
+  <div class="cols">
+    <div class="box"><h3>Route 1 · in the repository (lasting)</h3>
+      <ul><li>One value, one field, stored as an identifier (URL, DOI, ORCID)</li><li>Map it in the export crosswalk: <code>version</code>, related identifiers <code>IsSupplementTo</code> (code) and <code>IsDescribedBy</code> (article), ORCID on the creator</li><li>Clean up old records once</li></ul></div>
+    <div class="box"><h3>Route 2 · in the deposit client (quick)</h3>
+      <ul><li>Read the repository's full internal record instead of the export</li><li>Parse the citation strings</li><li>Good for a first test; route 1 helps every harvester</li></ul></div>
+  </div>
+  <p class="muted" style="margin-top:.5em;font-size:.85em">Not held? Decide: add a field, copy it from the code, or leave it to the code's own metadata.</p>
+  <span class="num"></span>
+</section>
+
+<section class="slide">
+  <p class="kicker">Demo · three anonymised records from one repository</p>
+  <h2>What one repository can send today</h2>
+  <table class="t">
+    <tr><th>Record</th><th>Can be sent</th><th>Held, not sent</th><th>Not held</th><th>Not sure</th><th>Code in the archive?</th></tr>
+    <tr><td>A · Python package</td><td>5</td><td>5</td><td>0</td><td>0</td><td>Yes</td></tr>
+    <tr><td>B · code zip</td><td>4</td><td>1</td><td>1</td><td>4</td><td>No</td></tr>
+    <tr><td>C · scripts</td><td>5</td><td>4</td><td>1</td><td>0</td><td>Visit found nothing</td></tr>
+  </table>
+  <ul style="margin-top:.8em">
+    <li>Version, repository and article never reach the export.</li>
+    <li>Only 1 of 3 is ready for a metadata-only deposit: check the archive first.</li>
+    <li>2 of 3 put a content licence (CC BY) on code.</li>
+  </ul>
+  <span class="num"></span>
 </section>
 
 <section class="slide">
@@ -101,10 +169,10 @@
   <h2>Then update: when the software changes</h2>
   <div class="cols">
     <div class="box"><h3>A new version</h3><p>New code, deposited on the same origin. The archive keeps every version, each with its own SWHID.</p></div>
-    <div class="box"><h3>A metadata-only update</h3><p>No new code. New metadata is deposited about software already in the archive, next to the old metadata, which stays.</p></div>
+    <div class="box"><h3>A metadata-only update</h3><p>No new code. New metadata is deposited about software already in the archive.</p></div>
   </div>
   <p class="big" style="margin-top:.8em">Which one does your repository send today?</p>
-  <span class="num">5</span>
+  <span class="num"></span>
 </section>
 
 <section class="slide cover">
@@ -112,7 +180,7 @@
   <h1>One next step each</h1>
   <p class="big">One field to add, or one update to send, and by when.</p>
   <p>Thank you. Linda Angulo Lopez</p>
-  <span class="num">6</span>
+  <span class="num"></span>
 </section>
 
 </div>
@@ -122,6 +190,7 @@
   document.getElementById("surveyurl").textContent = url.replace(/^https?:\/\//, "");
   try { new QRCode(document.getElementById("qr"), { text: url, width: 256, height: 256 }); } catch (e) { document.getElementById("qr").hidden = true; }
   const slides = [...document.querySelectorAll(".slide")];
+  slides.forEach((el, k) => { const n = el.querySelector(".num"); if (n) n.textContent = k + 1; });
   let i = Math.min(Math.max(parseInt(location.hash.slice(1)) - 1 || 0, 0), slides.length - 1);
   const show = n => { i = Math.min(Math.max(n, 0), slides.length - 1); slides.forEach((s, k) => s.classList.toggle("on", k === i)); history.replaceState(null, "", "#" + (i + 1)); };
   document.addEventListener("keydown", e => {

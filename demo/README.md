@@ -76,6 +76,45 @@ All three are copies of Zenodo records, so the repository's rule ("a Zenodo DOI 
 4. **Licences need a look.** Two of the three use a content licence (CC BY 4.0) for code, and in one of them the code's own `LICENSE` says GPL: the record and the code disagree (RSMD 6.3).
 5. **The page is not the export.** Author identifiers (ORCID) are exported as text next to the names rather than attached to the creators; version numbers survive only inside titles and citations.
 
+## How it gets lost
+
+The metadata passes through four steps before it reaches the archive:
+
+```text
+submission form → DSpace record (dc.* fields) → OAI-PMH DataCite crosswalk → export → deposit client → Atom XML + CodeMeta → Software Heritage
+```
+
+A field can drop out at three points. Comparing the export with DSpace's own full record (the `dim` format on the same OAI-PMH endpoint, `metadataPrefix=dim`) shows which point it was for each field:
+
+| Loss point | What happens | Fields in this demo |
+|---|---|---|
+| **1. No field** | The value is never stored on its own; it only appears inside other text | `version`: only inside the title ("… (0.5.0)") and the citation string ("…; Version 1.1; …") |
+| **2. A field, but as text** | The value is stored, but as a sentence with the identifier buried inside | `codeRepository` and `referencePublication`: in `dc.relation.ispartof` and `dc.relation.isreferencedby` as citation strings ("Author. Title [Software]. https://github.com/…"); ORCIDs in a separate field as "Name [0000-…]", not linked to the author |
+| **3. A field, not mapped** | The DataCite crosswalk has no rule for it, so the export leaves it out | the same relation fields, and `dc.relation.requires` ("Matlab"): `relatedIdentifiers` in the export is empty |
+
+Two other cases sit outside the repository:
+
+- **Upstream only**: dependencies and operating systems in record A exist only in the code (`pyproject.toml`). The repository never copied them.
+- **Lost in the copy**: record A's link to its GitHub release is on Zenodo but was not carried over when the record was copied into the repository.
+
+## How to move "held, not sent" to "can be sent"
+
+**Route 1, on the repository side (lasting).** Store each value in its own field, as an identifier, and map it in the DataCite crosswalk (in DSpace, an XSLT file in the OAI configuration, `config/crosswalks/oai/metadataFormats/`). The deposit client then maps each DataCite element to its CodeMeta term.
+
+| Field | Store it as | DataCite element | CodeMeta term in the deposit |
+|---|---|---|---|
+| version | its own field, e.g. `dc.description.version` = `1.1` | `<version>1.1</version>` | `codemeta:version` |
+| codeRepository | the URL alone, with the release tag: `https://github.com/<owner>/<repo>/tree/v1.1` | `<relatedIdentifier relatedIdentifierType="URL" relationType="IsSupplementTo">` (the relation Zenodo uses for GitHub releases) | `codemeta:codeRepository`, and the origin for `swh:reference` |
+| referencePublication | the article's DOI alone, e.g. `10.1000/182` | `<relatedIdentifier relatedIdentifierType="DOI" relationType="IsDescribedBy">` | `codemeta:referencePublication` |
+| author ORCID | the ORCID on the same author entry, not in a separate text field | `<creator><creatorName>…</creatorName><nameIdentifier nameIdentifierScheme="ORCID" schemeURI="https://orcid.org">0000-0002-1825-0097</nameIdentifier></creator>` | `codemeta:author` with its identifier |
+| softwareRequirements | the requirement and its version (`MATLAB R2023b`, `Python >=3.10`) | DataCite has no free-text field for it; a `Requires` relation needs an identifier, so map this field straight to CodeMeta in the deposit client | `codemeta:softwareRequirements` |
+
+Existing records need a one-off clean-up: pull the URL or DOI out of each citation string, and the version number out of titles.
+
+**Route 2, on the deposit-client side (quick).** Build the deposit from `dim`, which already carries every field, instead of from DataCite. Nothing changes in the repository, but the client has to parse the citation strings, and it ties the client to DSpace's internal field names. Good for a first test; route 1 is what makes the metadata reusable by everyone else who harvests the repository.
+
+**"Not held" and "upstream only"** need a decision, not a mapping: add the field to the submission form (operating system, dependencies), copy it from the code's own metadata at submission, or leave it to the code. Once the code is archived, its own `codemeta.json`, `CITATION.cff` or `pyproject.toml` is in the archive with it.
+
 ## Next steps for a repository in this position
 
 1. Add the version, the code repository URL (with the release tag) and the related article to the machine export.
